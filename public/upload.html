@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upload / Cadastro de HQ - HQs Online</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/styles.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-3" href="index.html">HQs Online</a>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <h2 class="text-center mb-4">Cadastrar / Enviar HQ</h2>
+
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card p-4 shadow">
+          <form id="uploadForm" novalidate>
+            <div class="mb-3">
+              <label for="nome" class="form-label">Nome / Título *</label>
+              <input id="nome" name="nome" class="form-control" required>
+              <div class="invalid-feedback">Informe o nome da HQ.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="autor" class="form-label">Autor *</label>
+              <input id="autor" name="autor" class="form-control" required>
+              <div class="invalid-feedback">Informe o autor.</div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label for="ano" class="form-label">Ano</label>
+                <input id="ano" name="ano" class="form-control" type="number" min="1800" max="2099">
+              </div>
+              <div class="col-md-8">
+                <label for="categoria" class="form-label">Categoria</label>
+                <input id="categoria" name="categoria" class="form-control">
+              </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+              <label for="descricao" class="form-label">Descrição</label>
+              <textarea id="descricao" name="descricao" class="form-control" rows="4"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="imagem" class="form-label">URL da imagem (capa)</label>
+              <input id="imagem" name="imagem" class="form-control" type="url" placeholder="https://...">
+            </div>
+
+            <div class="mb-3">
+              <label for="pdfFile" class="form-label">Arquivo PDF (opcional)</label>
+              <input id="pdfFile" name="pdfFile" class="form-control" type="file" accept="application/pdf">
+              <div class="form-text">Se enviar um PDF, ele será salvo localmente no navegador quando a API não estiver disponível.</div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="index.html" class="btn btn-secondary">Voltar</a>
+              <button id="submitBtn" class="btn btn-primary" type="submit">Enviar / Cadastrar</button>
+            </div>
+          </form>
+          <div id="msg" class="mt-3"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-white text-center py-3 mt-4">
+    <p>© 2025 HQs Online - Todos os direitos reservados</p>
+  </footer>
+
+  <script>
+    const API_BASE = 'http://localhost:3000';
+
+    function showMessage(text, type = 'success') {
+      const el = document.getElementById('msg');
+      el.innerHTML = `<div class="alert alert-${type}" role="alert">${text}</div>`;
+    }
+
+    // helper to read file as DataURL
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Erro lendo arquivo'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById('uploadForm').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const form = ev.target;
+      // basic validation
+      const nome = form.nome.value.trim();
+      const autor = form.autor.value.trim();
+      if (!nome) { form.nome.classList.add('is-invalid'); return; } else form.nome.classList.remove('is-invalid');
+      if (!autor) { form.autor.classList.add('is-invalid'); return; } else form.autor.classList.remove('is-invalid');
+
+      const payloadBase = {
+        nome,
+        autor,
+        ano: form.ano.value || '',
+        categoria: form.categoria.value || '',
+        descricao: form.descricao.value || '',
+        imagem: form.imagem.value || 'https://via.placeholder.com/800x1200?text=Sem+Capa'
+      };
+
+      const fileInput = document.getElementById('pdfFile');
+      const file = fileInput && fileInput.files && fileInput.files[0];
+      let payload = { ...payloadBase };
+      if (file) {
+        try { payload.pdfDataUrl = await readFileAsDataURL(file); } catch (err) { console.warn('Não foi possível ler o PDF, seguindo sem ele.', err); }
+      }
+
+      // try POST to API, fallback to localStorage
+      try {
+        const res = await fetch(`${API_BASE}/hqs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('API respondeu com erro');
+        const created = await res.json();
+        showMessage('HQ cadastrada com sucesso! Redirecionando...', 'success');
+        setTimeout(() => window.location.href = `index.html`, 1200);
+      } catch (e) {
+        // fallback: store in uploadedHqs localStorage
+        const raw = localStorage.getItem('uploadedHqs') || '[]';
+        const arr = JSON.parse(raw);
+        const id = Date.now() + arr.length;
+        arr.push({ id, ...payload });
+        localStorage.setItem('uploadedHqs', JSON.stringify(arr));
+        showMessage('API não disponível — HQ salva localmente. Volte à Home para ver (em localStorage).', 'warning');
+        setTimeout(() => window.location.href = `index.html`, 1200);
+      }
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload de HQ - HQs Online</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/styles.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- HEADER -->
+  <header class="site-header navbar navbar-expand-lg navbar-dark sticky-top border-bottom border-dark border-3 px-3">
+    <a class="navbar-brand fw-bold fs-3" style="font-family:'Bangers', cursive; color:#ffcc00; text-shadow:2px 2px 0 #000;" href="index.html">HQs Online</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="upload.html">Upload</a></li>
+        <li class="nav-item"><a class="nav-link" href="contato.html">Contato</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- UPLOAD FORM -->
+  <section class="container my-5">
+    <h2 class="text-center mb-4" style="font-family:'Bangers', cursive;">Envie Sua Própria HQ (PDF)</h2>
+    <div class="card shadow border border-4 border-dark p-4">
+      <form id="uploadForm">
+        <div class="mb-3">
+          <label for="titulo" class="form-label fw-bold">Título da HQ</label>
+          <input type="text" id="titulo" class="form-control border border-3 border-dark" required>
+        </div>
+        <div class="mb-3">
+          <label for="autor" class="form-label fw-bold">Autor</label>
+          <input type="text" id="autor" class="form-control border border-3 border-dark" required>
+        </div>
+        <div class="mb-3">
+          <label for="categoria" class="form-label fw-bold">Categoria</label>
+          <select id="categoria" class="form-select border border-3 border-dark" required>
+            <option value="">Selecione...</option>
+            <option value="Heróis">Heróis</option>
+            <option value="Aventura">Aventura</option>
+            <option value="Fantasia">Fantasia</option>
+            <option value="Terror">Terror</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="imagem" class="form-label fw-bold">URL da imagem de capa (opcional)</label>
+          <input type="url" id="imagem" class="form-control border border-3 border-dark" placeholder="https://...">
+        </div>
+        <div class="mb-3">
+          <label for="descricao" class="form-label fw-bold">Descrição</label>
+          <textarea id="descricao" class="form-control border border-3 border-dark" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="pdfFile" class="form-label fw-bold">Arquivo PDF (apenas .pdf)</label>
+          <input type="file" id="pdfFile" accept="application/pdf" class="form-control border border-3 border-dark" required>
+          <div class="form-text">Máx. 15 MB (configurável). O PDF ficará salvo localmente no navegador do usuário.</div>
+        </div>
+
+        <button type="submit" class="btn btn-warning border border-3 border-dark fw-bold">Enviar HQ</button>
+      </form>
+
+      <div id="feedback" class="mt-3"></div>
+    </div>
+  </section>
+
+  <footer class="bg-dark text-white text-center py-3 border-top border-3 border-warning">
+    <p>© 2025 HQs Online - Todos os direitos reservados</p>
+  </footer>
+
+  <!-- carrega app.js (onde está o array 'dados') -->
+  <script src="assets/js/app.js"></script>
+
+  <script>
+    // Limite de upload (bytes)
+    const MAX_BYTES = 15 * 1024 * 1024; // 15 MB
+
+    const form = document.getElementById("uploadForm");
+    const feedback = document.getElementById("feedback");
+
+    form.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      feedback.innerHTML = "";
+
+      const titulo = document.getElementById("titulo").value.trim();
+      const autor = document.getElementById("autor").value.trim();
+      const categoria = document.getElementById("categoria").value;
+      const imagem = document.getElementById("imagem").value.trim();
+      const descricao = document.getElementById("descricao").value.trim();
+      const fileInput = document.getElementById("pdfFile");
+      const file = fileInput.files[0];
+
+      if (!file) {
+        feedback.innerHTML = '<div class="alert alert-danger">Selecione um arquivo PDF.</div>';
+        return;
+      }
+      if (file.type !== "application/pdf") {
+        feedback.innerHTML = '<div class="alert alert-danger">Apenas arquivos PDF são permitidos.</div>';
+        return;
+      }
+      if (file.size > MAX_BYTES) {
+        feedback.innerHTML = `<div class="alert alert-danger">Arquivo muito grande. Máximo ${Math.round(MAX_BYTES/1024/1024)} MB.</div>`;
+        return;
+      }
+
+      // Lê o PDF como DataURL e salva no localStorage (uploadedHqs)
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const pdfDataUrl = e.target.result; // base64 data:application/pdf;...
+        try {
+          const raw = localStorage.getItem("uploadedHqs") || "[]";
+          const uploaded = JSON.parse(raw);
+
+          // calcular novo id (garantir que não colida com dados fixos)
+          const fixedIds = (typeof dados !== "undefined") ? dados.map(d => d.id) : [];
+          const uploadedIds = uploaded.map(u => Number(u.id) || 0);
+          const maxId = Math.max(0, ...fixedIds, ...uploadedIds);
+          const newId = maxId + 1;
+
+          const novo = {
+            id: newId,
+            titulo,
+            autor,
+            categoria,
+            data: new Date().toISOString().split("T")[0],
+            imagem: imagem || "", // se não tiver, app.js usará placeholder
+            conteudo: descricao,
+            pdfDataUrl // salva o PDF em base64 (atenção ao tamanho)
+          };
+
+          uploaded.push(novo);
+          localStorage.setItem("uploadedHqs", JSON.stringify(uploaded));
+
+          feedback.innerHTML = '<div class="alert alert-success">✅ HQ enviada e salva localmente! Você pode ver na Home.</div>';
+          form.reset();
+
+          // opcional: redirecionar para home automaticamente para ver a HQ
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1200);
+        } catch (err) {
+          console.error(err);
+          feedback.innerHTML = '<div class="alert alert-danger">Erro ao salvar a HQ. Veja o console.</div>';
+        }
+      };
+
+      reader.onerror = function() {
+        feedback.innerHTML = '<div class="alert alert-danger">Não foi possível ler o arquivo.</div>';
+      };
+
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>

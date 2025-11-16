@@ -1,18 +1,94 @@
 {
-  "usuarios": [
+  "hqs": [
     {
-      "id": "187cb7e5-e097-4224-8bc7-b610c855e2b1",
-      "login": "admin",
-      "senha": "123",
-      "nome": "Administrador do Sistema",
-      "email": "admin@abc.com"
+      "id": 1,
+      "nome": "Batman",
+      "autor": "DC Comics",
+      "ano": "1939",
+      "categoria": "Herói",
+      "descricao": "O Cavaleiro das Trevas protege Gotham City com inteligência, estratégia e gadgets de alta tecnologia.",
+      "imagem": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*KpcmzkdswPGdPpp_TOc33A.jpeg",
+      "pdf": "#",
+      "fotos": [
+        "https://miro.medium.com/v2/resize:fit:720/format:webp/1*KpcmzkdswPGdPpp_TOc33A.jpeg",
+        "https://upload.wikimedia.org/wikipedia/en/1/17/Batman-BenAffleck.jpg",
+        "https://upload.wikimedia.org/wikipedia/en/3/3f/Batman-DCRebirth.jpg"
+      ]
     },
     {
-      "id": "ec37c83d-4b7f-458d-9e10-3fda7d37cd3e",
-      "login": "user",
-      "senha": "123",
-      "nome": "Usuario Comum",
-      "email": "user@abc.com"
+      "id": 2,
+      "nome": "Homem-Aranha",
+      "autor": "Marvel Comics",
+      "ano": "1962",
+      "categoria": "Herói",
+      "descricao": "Peter Parker usa seus poderes aracnídeos para proteger Nova York e equilibrar sua vida como herói e estudante.",
+      "imagem": "https://www.planocritico.com/wp-content/uploads/2024/06/ultimate-homem-aranha-vol-1-2024-plano-critico.jpg",
+      "pdf": "#",
+      "fotos": [
+        "https://www.planocritico.com/wp-content/uploads/2024/06/ultimate-homem-aranha-vol-1-2024-plano-critico.jpg",
+        "https://upload.wikimedia.org/wikipedia/en/4/44/SpiderMan2018.png",
+        "https://upload.wikimedia.org/wikipedia/en/1/1e/Spider-Man_PS4_cover.jpg"
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "Superman",
+      "autor": "DC Comics",
+      "ano": "1938",
+      "categoria": "Herói",
+      "descricao": "O Homem de Aço, símbolo de esperança e justiça, luta pela verdade e pelo bem com poderes sobre-humanos.",
+      "imagem": "https://upload.wikimedia.org/wikipedia/en/3/35/Supermanflying.png",
+      "pdf": "#",
+      "fotos": [
+        "https://upload.wikimedia.org/wikipedia/en/3/35/Supermanflying.png",
+        "https://upload.wikimedia.org/wikipedia/en/3/3c/SupermanEarthOne.jpg",
+        "https://upload.wikimedia.org/wikipedia/en/e/eb/SupermanShazam.png"
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Mulher-Maravilha",
+      "autor": "DC Comics",
+      "ano": "1941",
+      "categoria": "Heroína",
+      "descricao": "Diana, princesa das Amazonas, representa força, coragem e compaixão na luta pela paz mundial.",
+      "imagem": "https://hqrock.files.wordpress.com/2014/07/wonder-woman-36-cover-2014-by-david-finch.jpg?w=389&h=519&crop=1",
+      "pdf": "#",
+      "fotos": [
+        "https://hqrock.files.wordpress.com/2014/07/wonder-woman-36-cover-2014-by-david-finch.jpg?w=389&h=519&crop=1",
+        "https://upload.wikimedia.org/wikipedia/en/9/93/WonderWoman1984poster.jpg",
+        "https://upload.wikimedia.org/wikipedia/en/1/1b/Wonder_Woman_2017_poster.jpg"
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "Homem de Ferro",
+      "autor": "Marvel Comics",
+      "ano": "1963",
+      "categoria": "Herói",
+      "descricao": "Tony Stark, o gênio bilionário, usa sua armadura tecnológica para combater ameaças globais e proteger o mundo.",
+      "imagem": "http://www.guiadosquadrinhos.com/edicaoestrangeira/ShowImage.aspx?id=9734&path=ir899076_9734.jpg&w=400&h=627",
+      "pdf": "#",
+      "fotos": [
+        "http://www.guiadosquadrinhos.com/edicaoestrangeira/ShowImage.aspx?id=9734&path=ir899076_9734.jpg&w=400&h=627",
+        "https://upload.wikimedia.org/wikipedia/en/0/00/Iron_Man_bleeding_edge_2.jpg",
+        "https://upload.wikimedia.org/wikipedia/en/1/1a/Iron_Man_3_poster.jpg"
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Capitão América",
+      "autor": "Marvel Comics",
+      "ano": "1941",
+      "categoria": "Herói",
+      "descricao": "Steve Rogers, o supersoldado, luta pela liberdade e justiça com seu lendário escudo indestrutível.",
+      "imagem": "https://www.blogdoselback.com.br/wp-content/uploads/2023/05/cropped-Capitao-America-1-710x399.jpg",
+      "pdf": "#",
+      "fotos": [
+        "https://www.blogdoselback.com.br/wp-content/uploads/2023/05/cropped-Capitao-America-1-710x399.jpg",
+        "https://upload.wikimedia.org/wikipedia/en/5/5d/CaptainAmericaTheWinterSoldierPoster.jpg",
+        "https://upload.wikimedia.org/wikipedia/en/2/25/Captain_America_Civil_War_poster.jpg"
+      ]
     }
   ]
 }

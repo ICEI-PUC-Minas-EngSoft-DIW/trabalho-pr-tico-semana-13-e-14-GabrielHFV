@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastro de HQ - HQs Online</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-3" href="index.html">HQs Online</a>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <h2 class="text-center mb-4">Cadastrar Nova HQ</h2>
+
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card p-4 shadow">
+          <form id="cadastroForm" novalidate>
+            <div class="mb-3">
+              <label for="nome" class="form-label">Nome *</label>
+              <input id="nome" name="nome" class="form-control" required>
+              <div class="invalid-feedback">Informe o nome da HQ.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="autor" class="form-label">Autor *</label>
+              <input id="autor" name="autor" class="form-control" required>
+              <div class="invalid-feedback">Informe o autor.</div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label for="ano" class="form-label">Ano</label>
+                <input id="ano" name="ano" class="form-control" type="number" min="1800" max="2099">
+              </div>
+              <div class="col-md-8">
+                <label for="categoria" class="form-label">Categoria</label>
+                <input id="categoria" name="categoria" class="form-control">
+              </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+              <label for="descricao" class="form-label">Descrição</label>
+              <textarea id="descricao" name="descricao" class="form-control" rows="4"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="imagem" class="form-label">URL da imagem (capa)</label>
+              <input id="imagem" name="imagem" class="form-control" type="url" placeholder="https://...">
+            </div>
+
+            <div class="mb-3">
+              <label for="pdfFile" class="form-label">Arquivo PDF (opcional)</label>
+              <input id="pdfFile" name="pdfFile" class="form-control" type="file" accept="application/pdf">
+              <div class="form-text">Se enviar um PDF, ele será salvo localmente no navegador quando a API não estiver disponível.</div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="index.html" class="btn btn-secondary">Voltar</a>
+              <button id="submitBtn" class="btn btn-primary" type="submit">Cadastrar</button>
+            </div>
+          </form>
+          <div id="msg" class="mt-3"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-white text-center py-3 mt-4">
+    <p>© 2025 HQs Online - Todos os direitos reservados</p>
+  </footer>
+
+  <script>
+    const API_BASE = 'http://localhost:3000';
+
+    function showMessage(text, type = 'success') {
+      const el = document.getElementById('msg');
+      el.innerHTML = `<div class="alert alert-${type}" role="alert">${text}</div>`;
+    }
+
+    document.getElementById('cadastroForm').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const form = ev.target;
+      // basic validation
+      const nome = form.nome.value.trim();
+      const autor = form.autor.value.trim();
+      if (!nome) {
+        form.nome.classList.add('is-invalid');
+        return;
+      } else form.nome.classList.remove('is-invalid');
+      if (!autor) {
+        form.autor.classList.add('is-invalid');
+        return;
+      } else form.autor.classList.remove('is-invalid');
+
+      // prepare base payload
+      const payloadBase = {
+        nome,
+        autor,
+        ano: form.ano.value || '',
+        categoria: form.categoria.value || '',
+        descricao: form.descricao.value || '',
+        imagem: form.imagem.value || 'https://via.placeholder.com/800x1200?text=Sem+Capa'
+      };
+
+      // helper to read file as DataURL
+      function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error('Erro lendo arquivo'));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // if PDF file provided, read it first and add pdfDataUrl to payload
+      const fileInput = document.getElementById('pdfFile');
+      const file = fileInput && fileInput.files && fileInput.files[0];
+      let payload = { ...payloadBase };
+      if (file) {
+        try {
+          const pdfDataUrl = await readFileAsDataURL(file);
+          payload.pdfDataUrl = pdfDataUrl;
+        } catch (err) {
+          console.warn('Não foi possível ler o PDF, seguindo sem ele.', err);
+        }
+      }
+
+      // try POST to API, fallback to localStorage
+      try {
+        const res = await fetch(`${API_BASE}/hqs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('API respondeu com erro');
+        const created = await res.json();
+        showMessage('HQ cadastrada com sucesso! Redirecionando...', 'success');
+        setTimeout(() => window.location.href = `index.html`, 1200);
+      } catch (e) {
+        // fallback: store in uploadedHqs localStorage
+        const raw = localStorage.getItem('uploadedHqs') || '[]';
+        const arr = JSON.parse(raw);
+        // assign an id based on timestamp + length to reduce collision
+        const id = Date.now() + arr.length;
+        arr.push({ id, ...payload });
+        localStorage.setItem('uploadedHqs', JSON.stringify(arr));
+        showMessage('API não disponível — HQ salva localmente. Volte à Home para ver (em localStorage).', 'warning');
+        setTimeout(() => window.location.href = `index.html`, 1200);
+      }
+    });
+  </script>
+
+</body>
+</html>

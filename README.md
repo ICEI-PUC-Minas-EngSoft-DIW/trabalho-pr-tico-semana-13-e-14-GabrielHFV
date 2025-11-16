@@ -9,15 +9,21 @@ Sugerimos o uso das seguintes ferramentas acessíveis: [FullCalendar](https://fu
 
 ## Informações do trabalho
 
-- Nome:
-- Matricula:
+- Nome:Gabriel Henrique Fernandes Vieira
+- Matricula:878933
 - Proposta de projeto escolhida:
 - Breve descrição sobre seu projeto:
 
 **Print da tela com a implementação**
 
-<< Coloque aqui uma breve explicação da implementação feita nessa etapa>>
+Criei uma página de visualizações que carrega os HQs do db.json e mostra gráficos e um mapa de forma interativa. Ao clicar numa fatia do gráfico de pizza você filtra a galeria e o gráfico de barras por categoria; o mapa marca as editoras/ autores (coordenadas simples).
 
-<<  COLOQUE A IMAGEM TELA 1 AQUI >>
+Principais arquivos:
 
-<<  COLOQUE A IMAGEM TELA 2 AQUI >>
+visualizations.html — layout com áreas para pie, bar, mapa e galeria.
+visualizations.js — busca os dados, gera os gráficos (Chart.js), o mapa (Leaflet) e controla a interação.
+index.html — link no menu para acessar a nova página.
+
+![alt text](image.png)![alt text](image-1.png)
+
+<<  COLOQUE A IMAGEM TELA 2 AQUI >>s

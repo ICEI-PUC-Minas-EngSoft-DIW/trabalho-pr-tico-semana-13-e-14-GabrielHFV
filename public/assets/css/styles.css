@@ -1,0 +1,236 @@
+/* =======================
+   HQs Online - Estilos Gerais
+   Paleta principal:
+     --blue:  #0392cf  (primária)
+     --red:   #ce152b  (ações / accents)
+     --dark:  #010202  (texto principal)
+     --light: #e0f2fb  (background claro / neutro)
+   ======================= */
+
+/* ===== VARIÁVEIS (fácil manutenção) ===== */
+:root{
+  --blue: #0392cf;
+  --red:  #ce152b;
+  --dark: #010202;
+  --light:#e0f2fb;
+}
+
+/* ===== RESET BÁSICO ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* fundo claro para destacar imagens e cards */
+  background-color: var(--light);
+  /* texto principal escuro para legibilidade */
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+/* ===== HEADER ===== */
+.site-header {
+  background-color: var(--blue);   /* cor primária dominante */
+  color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* links do menu */
+.site-header .nav-link {
+  color: #ffffff !important;
+  font-weight: 600;
+  transition: color 0.2s ease, transform 0.15s ease;
+}
+.site-header .nav-link:hover {
+  color: var(--red) !important;     /* hover vermelho para destaque */
+  transform: translateY(-2px);
+}
+
+/* botão de busca / ações */
+.site-header .btn-warning {
+  background-color: var(--red);
+  color: #fff;
+  border: none;
+  transition: background 0.2s ease;
+}
+.site-header .btn-warning:hover {
+  background-color: #a60f21; /* versão levemente mais escura do vermelho */
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  margin-top: 20px;
+}
+
+/* ===== CARROSSEL ===== */
+#destaquesSection {
+  background-color: transparent; /* usa o fundo principal */
+  padding: 36px 0;
+}
+#destaquesSection h2 {
+  color: var(--dark);
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+/* estilo do slide */
+.carousel-item img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border: 6px solid var(--blue);
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+
+/* legenda do slide */
+.carousel-caption {
+  background: rgba(1,2,2,0.6);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+/* ===== CARDS DE HQS ===== */
+#listaSection {
+  background-color: var(--light);
+  color: var(--dark);
+  padding: 50px 0;
+}
+
+#listaSection h2 {
+  color: var(--blue);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+/* cada card (Bootstrap .card vai herdar) */
+.card {
+  background-color: #ffffff;
+  border: 2px solid rgba(3,146,207,0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(3,146,207,0.12);
+}
+
+.card img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 auto;
+}
+
+.card h5.card-title {
+  color: var(--dark);
+  font-weight: 700;
+  margin: 0;
+}
+.card p.text-muted {
+  color: #666666;
+  margin-bottom: 8px;
+}
+
+/* botoes nos cards */
+.card .btn-warning, .card button {
+  background-color: var(--red);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.12s ease;
+}
+
+.card .btn-warning:hover, .card button:hover {
+  background-color: #a60f21;
+  transform: translateY(-2px);
+}
+
+/* ===== SEÇÃO DO AUTOR ===== */
+#autorSection {
+  background-color: #fff; /* contraste com a seção de cards */
+  color: var(--dark);
+  text-align: center;
+  padding: 36px 0;
+}
+#autorSection h3 {
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+#autorSection img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 6px solid var(--red);
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background-color: var(--blue);
+  color: #fff;
+  text-align: center;
+  padding: 18px;
+}
+.footer a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+.footer a:hover { color: var(--red); }
+
+/* ===== UTILITÁRIOS e RESPONSIVIDADE ===== */
+/* box-model explícito em seção título */
+.section-title { padding: 8px 12px; margin-top: 8px; }
+
+/* demonstrar uso de position (badge) */
+.floating-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--red);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  z-index: 5;
+}
+
+/* media queries */
+@media (max-width: 991px) {
+  .carousel-item img { height: 300px; }
+  .card img { height: 260px; }
+}
+@media (max-width: 767px) {
+  .carousel-item img { height: 220px; }
+  .card img { height: 200px; }
+  #searchForm { flex-direction: column; gap: 8px; align-items: stretch; }
+  .site-header .container { gap: 10px; display: flex; flex-direction: column; align-items: center; }
+}
+@media (max-width: 480px) {
+  body { font-size: 14px; }
+  .card .btn-warning { width: 100%; }
+}
